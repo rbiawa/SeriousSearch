@@ -1,10 +1,10 @@
-#########################################################################################
-# BEHAVIORAL ANALYSIS: BUYER vs CURIOUS
-# 
+################################################################################
+# Script to analyze search engagement through listings' revisit indicators and 
+#      search variability indicators
 # 
 #
 # source("src/serious_search/serious_search_through_revisit_analysis.R")
-#########################################################################################
+################################################################################
 
 
 
@@ -67,12 +67,6 @@ for (var in names(cat_plot)) {
 }
 
 dev.off()
-
-
-
-
-
-
 
 
 
@@ -195,12 +189,6 @@ dev.off()
 #======================================
 
 
-# With the original dataframe : 
-
-if (interactive() & FALSE) Factoshiny(analysis_df_transformed)
-
-
-
 res.PCA <- PCA(analysis_df_transformed %>% 
                dplyr::select("n_events", "n_listings", "nb_sessions", 
                              "mean_session_size", "mean_click_per_listing", 
@@ -224,8 +212,6 @@ res.PCA <- PCA(analysis_df_transformed %>%
 
 summary(res.PCA)
 
-
-#Factoshiny(res.PCA)
 
 
 dir.create("out/pdf/serious_search", recursive = TRUE, showWarnings = FALSE)
@@ -262,7 +248,7 @@ fviz_contrib(res.PCA, choice = "var", axes = 3, xtickslab.rt = 45) +
   geom_hline(yintercept = 100/ncol(res.PCA$rotation), linetype=2)
 
 #====================================
-# Factorial plan plot
+# Factorial plane plot
 #====================================
 
 plot.PCA(res.PCA,
@@ -319,282 +305,11 @@ fviz_pca_var(
 
 
 
-
-
-plot.PCA(
-  res.PCA,
-  axes = c(1, 2),
-  invisible = c("ind", "ind.sup"),
-  select = "cos2 0.5",
-  title = "Graphe des individus de l'ACP",
-  label = c("quali"),
-  cex = 0.7
-)
-
-plot.PCA(
-  res.PCA,
-  axes = c(1, 3),
-  invisible = c("ind", "ind.sup"),
-  select = "cos2 0.5",
-  title = "Graphe des individus de l'ACP",
-  label = c("quali"),
-  cex = 0.7
-)
-
-
-if(FALSE) {
-
-fviz_pca_ind(
-  res.PCA,
-  axes = c(1, 2),
-  select.ind = list(cos2 = 0.5),
-  invisible = "ind.sup",
-  label = "quali",
-  repel = TRUE,
-  title = "Graphe des individus de l'ACP"
-)
-
-
-
-
-  
-  fviz_pca_ind(
-  res.PCA,
-  axes = c(1, 2),
-  #  select.ind = list(cos2 = 0.5),
-  invisible = "ind.sup",
-  label = "quali",
-  repel = TRUE,
-  title = "Graphe des individus de l'ACP"
-)
-
-
-
-
-
-
-
-fviz_pca_ind(
-  res.PCA,
-  axes = c(1, 3),
-  select.ind = list(cos2 = 0.5),
-  invisible = "ind.sup",
-  label = "quali",
-  repel = TRUE,
-  title = "Graphe des individus de l'ACP"
-)
-
-
-
-fviz_pca_ind(
-  res.PCA,
-  axes = c(1, 3),
-  #  select.ind = list(cos2 = 0.5),
-  invisible = "ind.sup",
-  label = "quali",
-  repel = TRUE,
-  title = "Graphe des individus de l'ACP"
-)
-
-
-plot.PCA(
-  res.PCA,
-  axes = c(1, 3),
-  invisible = c("ind", "ind.sup"),
-  select = "cos2 0.5",
-  title = "Graphe des individus de l'ACP",
-  label = c("quali"),
-  cex = 0.7
-)
-
-
-}
-
-
-
-#=============================================
-# Clustering with HCPC method
-#=============================================
-
-#https://bookdown.org/evraloui/lbira2110/clustering.html
-#https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/classification-clustering.html
-
-if (FALSE){
-    res.HCPC <- HCPC(res.PCA,
-                     #        nb.clust=3,
-                     consol=FALSE,
-                     kk = 5000,
-                     graph=FALSE)
-    
-    plot.HCPC(res.HCPC,choice='tree',title='Arbre hiérarchique')
-    
-    plot.HCPC(res.HCPC,choice='map',draw.tree=FALSE,title='Plan factoriel')
-    
-    plot.HCPC(res.HCPC,
-              choice='3D.map',
-              ind.names=FALSE,centers.plot=FALSE,angle=60,
-              title='Arbre hiérarchique sur le plan factoriel')
-    
-    plot.HCPC(res.HCPC,
-              choice='map',
-              draw.tree=FALSE,
-              title='Plan factoriel',
-              axes=c(1,3))
-    
-    plot.HCPC(res.HCPC,
-              choice='3D.map',
-              ind.names=FALSE,
-              centers.plot=FALSE,
-              angle=60,
-              title='Arbre hiérarchique sur le plan factoriel',
-              axes=c(1,3))
-    
-    
-    
-    analysis_df_transformed$cluster_hcpc <- res.HCPC$data.clust$clust
-    
-    
-    freq(analysis_df_transformed$cluster_hcpc)
-    
-    
-    analysis_df_transformed[, research_category := factor(cluster_hcpc)]
-    
-    levels(analysis_df_transformed$research_category) <- c(
-      "Recreational searchers",
-      "Engaged Comparers",
-      "Intensive Explorers"
-    )
-    
-    freq(analysis_df_transformed$cluster_hcpc)
-    
-    freq(analysis_df_transformed$research_category)
-    
-    
-    
-    analysis_df_transformed$revisit_intensity <- res.PCA$ind$coord[,1]
-    analysis_df_transformed$preference_diversity <- res.PCA$ind$coord[,2]
-    analysis_df_transformed$temporal_rhythm <- res.PCA$ind$coord[,3]
-    
-    
-    
-    #==============================
-    # Cluster description
-    #==============================
-    
-    freq(analysis_df_transformed$any_revisit_fct)
-    
-    prop.table(table(analysis_df_transformed$research_category,
-                     analysis_df_transformed$any_revisit_fct),
-               1)
-    
-    
-    
-    #======================================
-    # Plot cluster
-    #======================================
-    
-    fviz_pca_ind(
-      res.PCA,
-      axes = c(1, 2),
-      geom.ind = "point",
-      habillage = analysis_df_transformed$cluster_hcpc,
-      #  addEllipses = TRUE,
-      alpha.ind = 0.2,             
-      pointshape = 1            
-    )
-    
-    
-    fviz_pca_ind(
-      res.PCA,
-      axes = c(1, 2),
-      select.ind = list(cos2 = 0.5),
-      geom.ind = "point",
-      habillage = analysis_df_transformed$cluster_hcpc,
-      #  addEllipses = TRUE,
-      alpha.ind = 0.2,             
-      pointshape = 1            
-    )
-    
-    
-    
-    fviz_pca_ind(
-      res.PCA,
-      axes = c(1, 2),
-      geom.ind = "point",
-      habillage = analysis_df_transformed$research_category,
-      #  addEllipses = TRUE,
-      alpha.ind = 0.2,             
-      pointshape = 1            
-    )
-    
-    
-    fviz_pca_ind(
-      res.PCA,
-      axes = c(1, 2),
-      select.ind = list(cos2 = 0.5),
-      geom.ind = "point",
-      habillage = analysis_df_transformed$research_category,
-      #  addEllipses = TRUE,
-      alpha.ind = 0.2,             
-      pointshape = 1            
-    )
-    
-    
-    
-    fviz_pca_ind(
-      res.PCA,
-      axes = c(1, 3),
-      geom.ind = "point",
-      habillage = analysis_df_transformed$research_category,
-      #  addEllipses = TRUE,
-      alpha.ind = 0.2,             
-      pointshape = 1            
-    )
-    
-    
-    fviz_pca_ind(
-      res.PCA,
-      axes = c(1, 3),
-      select.ind = list(cos2 = 0.5),
-      geom.ind = "point",
-      habillage = analysis_df_transformed$research_category,
-      #  addEllipses = TRUE,
-      alpha.ind = 0.2,             
-      pointshape = 1            
-    )
-    
-    
-    
-    
-    
-    fviz_cluster(res.HCPC, geom = "point", ellipse = TRUE)
-    
-    fviz_cluster(res.HCPC, geom = "point", ellipse = TRUE, axes = c(1, 3))
-    
-    #======================================
-    # Clsutering quality
-    #======================================
-    
-    
-    sil <- cluster::silhouette(as.numeric(res.HCPC$data.clust$clust), dist(res.PCA$ind$coord))
-    if (interactive()) plot(sil, color = c("red", "green", "blue"))
-    
-    aggregate(sil[, 3], list(cluster = as.numeric(res.HCPC$data.clust$clust)), mean)
-    
-}
 #==================================
 #
 # LOGISTIQUE REGRESSION
 #
 #==================================
-
-# is_logged  
-# phone_display           
-# mail_form
-
-# any_action
-# any_contact 
-
 
 # Correlation matrix plot
 
@@ -640,6 +355,11 @@ if(interactive()) corrplot(
 #==========================
 # Contact Modeling
 #==========================
+
+dir.create("out/pdf/serious_search/contact_regression", recursive = TRUE, showWarnings = FALSE)
+dir.create("out/png/serious_search/contact_regression", recursive = TRUE, showWarnings = FALSE)
+dir.create("out/tex/serious_search/contact_regression", recursive = TRUE, showWarnings = FALSE)
+
 
 contact_model <- glm(any_contact ~ 
                        n_listings + nb_sessions + 
@@ -689,38 +409,7 @@ if (interactive()){
 }
 
 
-if (FALSE){
 
-analysis_df_transformed$cookd_contact <- cookd$dist
-
-contact_model <- glm(any_contact ~ 
-                       n_listings + nb_sessions + 
-                       # prop_listings_revisited +
-                       # n_revisits_24h + 
-                       n_listings_revisited + 
-                       n_revisits_lt1h + 
-                       #n_revisits_lt6h + 
-                       n_revisits_gt48h +
-                       any_revisit +
-                       
-                       room_count_simpson + price_sd + area_sd 
-                     + city_simpson + dep_simpson 
-                     + city_contig + dep_contig + n_reg_fct
-
-                     
-                     ,data = subset(analysis_df_transformed, cookd_contact < 16/nrow(analysis_df_transformed)),
-                     family = binomial)
-
-
-nrow(contact_model$data) - nrow(analysis_df_transformed)
-nrow(contact_model$data)/nrow(analysis_df_transformed)
-
-
-vif(contact_model)
-
-summary(contact_model)
-
-}
 
 #========================================
 # Model selection
@@ -750,28 +439,33 @@ hoslem.test(contact_model$y, fitted(contact_model), g = 100)
 
 
 
-#install.packages("pscl")
-#library(pscl)
+retrieve_package("pscl")
+
 
 pR2(contact_model)
 
-if (!require("DescTools")) install.packages("DescTools");library(DescTools)
+
+retrieve_package("DescTools")
 
 PseudoR2(contact_model, which = "all")
 
-#library(pROC)
+
+retrieve_package("pROC")
 
 predictions <- predict(contact_model, type = "response")
 
 length(predictions) == length(contact_model$data$any_contact)
 
-roc_curve <- roc(contact_model$data$any_contact, predictions, percent=TRUE, plot=TRUE, ci=TRUE)
-plot(roc_curve)
+roc_curve <- roc(contact_model$data$any_contact, 
+                 predictions, percent=TRUE, plot=TRUE, ci=TRUE)
+
+if (interactive()) plot(roc_curve)
 
 auc(roc_curve)
 
 
-roc_curve <- roc(contact_model$data$any_contact, predictions, percent = TRUE, ci = TRUE)
+roc_curve <- roc(contact_model$data$any_contact, 
+                 predictions, percent = TRUE, ci = TRUE)
 
 pdf("out/pdf/serious_search/contact_regression/roc_auc.pdf", width = 10, height = 8)
 
@@ -801,12 +495,7 @@ dev.off()
 
 if(FALSE){
 
-  #crPlots(mod, ask = FALSE)
-  
-  dir.create("out/pdf/serious_search/glm/", recursive = TRUE, showWarnings = FALSE)
-  dir.create("out/png/serious_search/glm/", recursive = TRUE, showWarnings = FALSE)
-  
-  pdf("out/pdf/serious_search/glm/crplots_modele.pdf")
+  pdf("out/pdf/serious_search/contact_regression/crplots_model.pdf")
   
   crPlots(contact_model, ask = FALSE)
   
@@ -814,7 +503,7 @@ if(FALSE){
   
   
   
-  pdf("out/pdf/serious_search/glm/avplots_modele.pdf")
+  pdf("out/pdf/serious_search/contact_regression/avplots_model.pdf")
   
   avPlots(contact_model, ask = FALSE)
   
@@ -823,9 +512,9 @@ if(FALSE){
 }
 
 
-dir.create("out/tex/serious_search/glm/", recursive = TRUE, showWarnings = FALSE)
 
-sink("out/tex/serious_search/glm/contact_model_summary.tex")
+
+sink("out/tex/serious_search/contact_regression/contact_model_summary.tex")
 print(
   xtable::xtable(contact_model_summary,
                  align = c(rep("l", 1), rep("r", 4)),
@@ -845,6 +534,13 @@ sink()
 #==========================
 # Mail form Modeling
 #==========================
+
+dir.create("out/pdf/serious_search/mail_form_regression", recursive = TRUE, showWarnings = FALSE)
+dir.create("out/png/serious_search/mail_form_regression", recursive = TRUE, showWarnings = FALSE)
+dir.create("out/tex/serious_search/mail_form_regression", recursive = TRUE, showWarnings = FALSE)
+
+
+
 
 mail_form_model <- glm(mail_form ~ 
                          n_listings + nb_sessions + 
@@ -942,17 +638,13 @@ mail_form_model_summary <- odds.ratio(mail_form_model)
 
 hoslem.test(mail_form_model$y, fitted(mail_form_model), g = 10)
 
-#install.packages("pscl")
-#library(pscl)
 
 pR2(mail_form_model)
 
-if (!require("DescTools")) install.packages("DescTools");library(DescTools)
+
 
 PseudoR2(mail_form_model, which = "all")
 
-
-#library(pROC)
 
 predictions <- predict(mail_form_model, type = "response")
 
@@ -963,8 +655,7 @@ plot(roc_curve)
 
 auc(roc_curve)
 
-dir.create("out/pdf/serious_search/mail_form_regression",
-           recursive = TRUE, showWarnings = FALSE)
+
 
 roc_curve <- roc(mail_form_model$data$mail_form, predictions, percent = TRUE, ci = TRUE)
 
@@ -1008,14 +699,8 @@ sink()
 
 
 
-
-
-
 # Logit linearity
  
-
-
-#crPlots(mod, ask = FALSE)
 
 if(FALSE){
   
@@ -1036,44 +721,3 @@ if(FALSE){
   
 }
 
-
-#=================================
-#
-# Plot effects
-#
-#=================================
-retrieve_package("GGally")
-retrieve_package("effects")
-retrieve_package("gtsummary")
-
-# png("out/png/serious_search/glm/spatial_effect_city_var_contact_model.png", width = 800, height = 800)
-# 
-# plot(Effect(c("dep_simpson", "dep_contig", "city_simpson",  "city_contig"), contact_model))
-# 
-# dev.off()
-
-
-png("out/png/serious_search/glm/spatial_effect_city_simp_contact_model.png", width = 800, height = 800)
-
-plot(Effect(c("city_simpson"), contact_model))
-
-dev.off()
-
-png("out/png/serious_search/glm/spatial_effect_city_contig_contact_model.png", width = 800, height = 800)
-
-plot(Effect(c("city_contig"), contact_model))
-
-dev.off()
-
-
-png("out/png/serious_search/glm/spatial_effect_dep_simp_contact_model.png", width = 800, height = 800)
-
-plot(Effect(c("dep_simpson"), contact_model))
-
-dev.off()
-
-png("out/png/serious_search/glm/spatial_effect_dep_contig_contact_model.png", width = 800, height = 800)
-
-plot(Effect(c("dep_contig"), contact_model))
-
-dev.off()

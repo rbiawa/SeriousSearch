@@ -1,10 +1,9 @@
-#########################################################################################
-# BEHAVIORAL ANALYSIS: BUYER vs CURIOUS
-# 
-# 
+################################################################################
+# Script to compute listings' revisit indicators and search variability 
+#     indicators
 #
 # source("src/serious_search/serious_search_through_revisit.R")
-#########################################################################################
+################################################################################
 
 
 check_connectivity <- function(views, contig_graph, user_id, loc_col, contiguous_col = "contiguous") {
@@ -31,21 +30,10 @@ check_connectivity <- function(views, contig_graph, user_id, loc_col, contiguous
 
 
 #================================================
-# 1. Construction of a complete timestamp
+# 1. Filter events with features data
 #================================================
 
-
-events2 <- events_year %>%
-  mutate(
-    datetime = ymd_h(paste(date, hour)),
-    datetime = as.POSIXct(datetime)
-  )
-
-
-
-events2 <- events2[id_listing %in% features$id_listing, ] 
-
-
+events2 <- events[id_listing %in% features$id_listing, ] 
 
 
 users_listing_nb <- events2[, .(n_listings = uniqueN(id_listing)), by = fullvisitorid]
@@ -56,27 +44,6 @@ users_listing_nb <- users_listing_nb[n_listings > 2]
 
 
 events2 <- events2[fullvisitorid %in% users_listing_nb$fullvisitorid,] 
-
-
-if (FALSE){
-  
-  (1/20)*100
-  
-  size <- round(nrow(users_listing_nb)/20)
-  
-  
-  set.seed(123)
-  
-  users <- sample(unique(users_listing_nb$fullvisitorid), size = size)
-  
-  
-  events2 <- events2 %>% 
-    filter(fullvisitorid %in% users)
-}
-
-
-
-
 
 
 

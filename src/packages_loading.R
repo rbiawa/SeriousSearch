@@ -12,13 +12,13 @@
 
 
 
-#######################################################################################################
-# Function that checks if a package is installed or not. If yes, it loads it into the session
-# otherwise, it downloads it before loading it into memory.
+#===============================================================================
+# Function that checks if a package is installed or not. If yes, it loads it 
+# into the session otherwise, it downloads it before loading it into memory.
 #
-# package_name: a string of a package name , which must be enclosed in quotation marks ("").
-# 
-#######################################################################################################
+# package_name: a string of a package name , which must be enclosed in quotation
+#   marks ("").
+#===============================================================================
 
 
 retrieve_package <- function(package_name) {
@@ -53,13 +53,13 @@ retrieve_package <- function(package_name) {
 
 
 
-#######################################################################################################
+#===================================================================================
 # Set parallel plan based on the environment (local or cluster) and operating system
 # 
 # - Uses 'cluster' mode if running on a cluster (e.g., SLURM, PBS).
 # - On Windows: defaults to multisession.
 # - On Linux/macOS: defaults to multicore unless a cluster is detected.
-#######################################################################################################
+#===================================================================================
 
 # This function configures a safe and portable parallelization plan.
 # It works in all environments: local machines, Jean-Zay interactive sessions,
@@ -120,9 +120,9 @@ set_parallel_plan <- function() {
 
 
 
-######################################################
-##                   LOADIGN PACKAGES               ##
-######################################################
+#====================================================
+#                   Laod packages              
+#====================================================
 
 # For general settings
 retrieve_package("lubridate") # For date variables
@@ -157,42 +157,26 @@ retrieve_package("furrr")
 # Configure parallelization plan based on OS
 set_parallel_plan()
 
-
-# For graph analysis and modeling
+#===========================
+# For graph object
+#===========================
 retrieve_package("igraph")
-retrieve_package("tidygraph")
-retrieve_package("assortnet") # For assortativity
-retrieve_package("network")
-retrieve_package("intergraph") #From conversion of igraph object into network one and vice versa.
 
-## For ERGM modeling
-retrieve_package("Rglpk")
-retrieve_package("ergm")
-retrieve_package("ergm.count")
-retrieve_package("latentnet")
-retrieve_package("snowFT") # required for multithreaded MCMC
-retrieve_package("JANE")
-
-
-## For GWR modeling
 
 
 
 retrieve_package("tmap")
 retrieve_package("plotly")
 #retrieve_package("gtsummary")
-retrieve_package("GGally")
 retrieve_package("broom.helpers")
-retrieve_package("GWmodel")
-#retrieve_package("spdep")
 
 
 
-# For graph partitionning
-retrieve_package("sbm")
-retrieve_package("greed")
 
+
+#===========================
 # For spatial analysis
+#===========================
 retrieve_package("sf") # For cartography
 retrieve_package("cartography")
 retrieve_package("geosphere")
@@ -205,17 +189,11 @@ retrieve_package("vegan") # For Mantel test and diversity metrics
 retrieve_package("ineq") # For Gini index
 
 
-# For sequences analysis
 
-retrieve_package("TraMineR")
-retrieve_package("WeightedCluster")
-retrieve_package("seqhandbook")
-retrieve_package("seqHMM") # To be checked on the server (not installing)
-
-
-
-
+#===========================
 # For statistical modeling
+#===========================
+
 retrieve_package("lmtest")
 retrieve_package("pROC")
 retrieve_package("pscl")
@@ -225,8 +203,9 @@ retrieve_package("ResourceSelection") # for Hosmer-Lemeshow test
 retrieve_package("MASS")
 retrieve_package("AER")
 
-
+#===========================
 # PCA and clustering
+#===========================
 
 retrieve_package("memoise") # For memory optimisation
 retrieve_package("rprojroot")
@@ -260,19 +239,23 @@ library(grid)                   #is a R base package (no install)
 
 
 
- 
+#=========================== 
 # Cluster number
-
+#===========================
 
 retrieve_package("NbClust")
 retrieve_package("clusterCrit")
 
 
 
-# Change points
-retrieve_package("changepoint")
-
-
-##############################################
+#====================================
 
 old_par <- par(no.readonly = TRUE)
+
+
+#=====================================
+# User functions
+#=====================================
+
+# Load general processing functions
+source("src/processing_functions.R")

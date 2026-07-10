@@ -1,0 +1,73 @@
+##############################################################################
+# Main processing script
+# 
+# 
+#
+# source("main.R")
+##############################################################################
+
+
+#==============================
+# Processing parameters
+#==============================
+
+LEAVE_R <- FALSE
+
+
+#=========================
+# Create directories
+#=========================
+
+source("src/create_directories.R")
+
+#=========================
+# Laod packages
+#=========================
+
+source("src/packages_loading.R")
+
+#=========================
+# Load data
+#=========================
+
+source("src/load_data.R")
+
+#============================
+# Compute contact indicators
+#============================
+
+source("src/serious_search/contact_indicators.R")
+
+#===============================================
+# Script to compute listings' revisit indicators 
+#   and search variability indicators
+#===============================================
+
+source("src/serious_search/serious_search_through_revisit.R")
+
+
+#=============================================================================
+# Script to analyze search engagement through listings' revisit indicators and 
+#      search variability indicators
+#=============================================================================
+
+source("src/serious_search/serious_search_through_revisit_analysis.R")
+
+
+
+#=============================================================================
+# Script to analyze search engagement through listings' revisit indicators and 
+#      search variability indicators on a sample of the online searchers
+#=============================================================================
+
+source("src/serious_search/serious_search_through_revisit_sample_analysis.R")
+
+#===========================================
+# Behavioural Temporality: Revist vs Contact
+#===========================================
+
+source("src/serious_search/revisit_contact_temporality.R")
+
+
+
+if (LEAVE_R) q(save = "no", status = 0, runLast = FALSE)

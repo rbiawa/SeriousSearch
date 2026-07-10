@@ -1,23 +1,22 @@
-#########################################################################################
+################################################################################
 # Behavioural Temporality: Revist vs Contact
 # 
 # 
 #
 # source("src/serious_search/revisit_contact_temporality.R")
-#########################################################################################
+################################################################################
 
-if(!require("xtable")) install.packages("xtable"); library(xtable)
-
+retrieve_package("xtable")
 
 plot_num_var <- function(var) {
   
-  # Statistiques
+  # Statistics
   quartiles <- quantile(var, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
   mean_val  <- mean(var, na.rm = TRUE)
   
   df <- data.frame(x = var)
   
-  # Densité
+  # Density
   p1 <- ggplot(df, aes(x = x)) +
     geom_density(fill = "lightgray") +
     geom_vline(xintercept = quartiles, color = "blue", linetype = "dashed") +
@@ -35,29 +34,6 @@ plot_num_var <- function(var) {
   gridExtra::grid.arrange(p1, p2, ncol = 2)
 }
 
-
-
-
-
-
-
-
-
-
-
-# ===================================================================
-# 0. Reconstruct timestamps (hour-only precision)
-# ===================================================================
-
-events <- events_year %>%
-  mutate(
-    datetime = ymd_h(paste(date, hour)),
-    datetime = as.POSIXct(datetime)
-  )
-
-rm(events_year)
-
-gc()
 
 
 #============================================
@@ -82,12 +58,13 @@ summary(visits$duration_min)
 summary(visits$duration_hour)
 
 
-
+#====================================================================
 # Compute listing revisits using data.table
 # ---------------------------------------------------------------
 # This chunk identifies revisits of the same listing by the same user,
 # classifies them as intra‑session or inter‑session, and computes the
 # time elapsed between successive consultations.
+#====================================================================
 
 # Sort events so that successive consultations are correctly ordered
 setorder(events, fullvisitorid, id_listing, datetime)
@@ -125,15 +102,14 @@ events[
   by = .(fullvisitorid, id_listing)
 ]
 
+#====================================================================
 # The table 'events' now contains:
 # - visit_rank: order of consultations for each listing
 # - is_revisit: TRUE/FALSE
 # - revisit_type: intra_session / inter_session / NA
 # - time_since_last: seconds since previous consultation
-# ---------------------------------------------------------------
+#====================================================================
 
-
-dir.create("out/Rdata/serious_search/", recursive = TRUE, showWarnings = FALSE)
 
 if(TRUE) save(visits, events,
               file = "out/Rdata/serious_search/visit_and_revisit_time.RData")
@@ -168,6 +144,9 @@ row.names(summary) <- "inter_revisit_time"
 
 if (interactive() & exists("plot_num_var")) plot_num_var(revisits$time_since_last_hour)
 
+
+
+# save table in .tex format
 
 sink("out/tex/serious_search/univariate_analysis/inter_revisit_time.tex")
 print(
@@ -205,7 +184,7 @@ session <- visits %>%
   )
 
 
-
+# save table in .tex format
 
 sink("out/tex/serious_search/univariate_analysis/session_time.tex")
 print(
@@ -213,8 +192,8 @@ print(
                  align = c(rep("l", 2), rep("r", 7)),
                  display = c(rep("s", 2), rep("f", 7))
   ),
-  include.rownames = FALSE,   # ou FALSE selon ton besoin
-  booktabs = TRUE,            # joli rendu LaTeX
-  floating = FALSE   # <-- crucial: no table environment
+  include.rownames = FALSE, 
+  booktabs = TRUE,            
+  floating = FALSE   
 )
 sink()
