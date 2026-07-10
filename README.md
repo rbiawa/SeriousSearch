@@ -58,6 +58,7 @@ If you use this source code, please cite article:
   - `processing`: `R` scripts for data processing ad hoc functions.
   - `serious_search`: `R` scripts for the analysis of serious search.
 - `main.R`: the main `R` scripts to run the full processings.
+- `Serious_search_identification.Rproj`: `R` projet file to run the projet.
 
 ## Installation
 
