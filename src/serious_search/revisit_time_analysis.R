@@ -1,5 +1,5 @@
 ################################################################################
-# Behavioural Temporality: Revist vs Contact
+# A script to analyze the revisiting temporality
 # 
 # 
 #

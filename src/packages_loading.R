@@ -53,73 +53,6 @@ retrieve_package <- function(package_name) {
 
 
 
-#===================================================================================
-# Set parallel plan based on the environment (local or cluster) and operating system
-# 
-# - Uses 'cluster' mode if running on a cluster (e.g., SLURM, PBS).
-# - On Windows: defaults to multisession.
-# - On Linux/macOS: defaults to multicore unless a cluster is detected.
-#===================================================================================
-
-# This function configures a safe and portable parallelization plan.
-# It works in all environments: local machines, Jean-Zay interactive sessions,
-# and Slurm batch jobs. It never exceeds the number of CPUs actually available.
-# 
-# Key idea:
-# - In interactive sessions on Jean-Zay, cgroups restrict R to 1 CPU even if
-#   Slurm allocates more cores. Trying to use more workers causes errors.
-# - In batch jobs, cgroups correctly expose all allocated CPUs.
-# - Therefore, we take the minimum between:
-#       (1) CPUs visible to R (cgroups)
-#       (2) CPUs allocated by Slurm (SLURM_CPUS_PER_TASK)
-# - This guarantees stability and avoids all parallelly/future errors.
-
-set_parallel_plan <- function() {
-  # Check required packages
-  if (!requireNamespace("furrr", quietly = TRUE) ||
-      !requireNamespace("future", quietly = TRUE) ||
-      !requireNamespace("parallelly", quietly = TRUE)) {
-    stop("Packages 'furrr', 'future', and 'parallelly' are required.")
-  }
-
-  # Number of CPUs actually visible to R (cgroups, Docker, Singularity, etc.)
-  cores_cgroups <- parallelly::availableCores()
-
-  # Number of CPUs allocated by Slurm (batch jobs)
-  cores_slurm <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK", "1"))
-
-  # Final number of workers = minimum of the two
-  n_workers <- max(1L, min(cores_cgroups, cores_slurm))
-
-  # Choose backend depending on OS
-  if (.Platform$OS.type == "windows") {
-    future::plan(future::multisession, workers = n_workers)
-    plan_type <- sprintf("multisession (%d workers)", n_workers)
-  } else {
-    # On Linux/macOS: use multicore if supported, otherwise multisession
-    if (future::supportsMulticore()) {
-      future::plan(future::multicore, workers = n_workers)
-      plan_type <- sprintf("multicore (%d workers)", n_workers)
-    } else {
-      future::plan(future::multisession, workers = n_workers)
-      plan_type <- sprintf("multisession (%d workers)", n_workers)
-    }
-  }
-
-  # Diagnostic message
-  message(
-    "Parallelization plan set to: ", plan_type,
-    " | cgroups=", cores_cgroups,
-    " | slurm=", cores_slurm
-  )
-}
-
-
-
-
-
-
-
 #====================================================
 #                   Laod packages              
 #====================================================
@@ -154,8 +87,6 @@ retrieve_package("data.table")
 retrieve_package("future")
 retrieve_package("furrr")
 
-# Configure parallelization plan based on OS
-set_parallel_plan()
 
 #===========================
 # For graph object
@@ -165,7 +96,7 @@ retrieve_package("igraph")
 
 
 
-retrieve_package("tmap")
+#retrieve_package("tmap")
 retrieve_package("plotly")
 #retrieve_package("gtsummary")
 retrieve_package("broom.helpers")
@@ -219,7 +150,7 @@ retrieve_package("moments")
 retrieve_package("DescTools") # for normalized kurtosis
 
 retrieve_package("FactoMineR")
-retrieve_package("Factoshiny")
+#retrieve_package("Factoshiny")
 retrieve_package("cluster")
 retrieve_package("ClusterR") # For minibatch
 retrieve_package("ggdendro")
@@ -230,9 +161,6 @@ retrieve_package("plotly")     # for interactive plots
 retrieve_package("GGally")     # for Scatterplot matrix (2D)
 retrieve_package("factoextra") # for PCA analysis and visualization
 
-retrieve_package("gridExtra")   # for data.frame printing
-#retrieve_package("svglite")    # for SVG image saving
-#retrieve_package("patchwork")  # for images combination
 retrieve_package("gridExtra")   # for images combination with ggarrange
 library(grid)                   #is a R base package (no install)
 
@@ -246,11 +174,6 @@ library(grid)                   #is a R base package (no install)
 retrieve_package("NbClust")
 retrieve_package("clusterCrit")
 
-
-
-#====================================
-
-old_par <- par(no.readonly = TRUE)
 
 
 #=====================================

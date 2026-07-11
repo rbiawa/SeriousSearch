@@ -7,12 +7,6 @@
 ################################################################################
 
 
-#===============================
-# Laod spatial datasets
-#===============================
-
-source("src/raw_data_loading.R")
-
 
 #==================================
 # Load events dataset
@@ -37,23 +31,12 @@ mail_phone <- read_parquet("data/mail_phone.parquet") %>%
 
 
 
-mail_phone[, date := as.Date(date, format = "%Y%m%d")]
-
-summary(mail_phone$date)
-
 freq(mail_phone$is_logged)
 
 freq(mail_phone$event_action)
 
 look_for(mail_phone)
 
-
-if(interactive()) mail_phone[order(fullvisitorid, visitid)] %>% View()
-
-
-
-mail_phone <- mail_phone[
-  date <= max(events$date),]
 
 action_summary <- mail_phone[, .(
   

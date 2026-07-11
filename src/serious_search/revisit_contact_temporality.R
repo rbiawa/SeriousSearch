@@ -1,5 +1,5 @@
 ################################################################################
-# Behavioural Temporality: Revist vs Contact
+# Temporality between Revist and Contact
 # 
 # 
 #

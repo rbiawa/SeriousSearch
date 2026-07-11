@@ -2,6 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
+.pdf
+.png
 .parquet
 .gpkg
-.png
+.svg
+.CSV

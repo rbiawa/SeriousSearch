@@ -6,7 +6,10 @@
 # source("src/serious_search/contact_indicators.R")
 ##############################################################################
 
-
+if (!exists("PHONE_NUMBER_DISPLAY") || !exists("MAIL_FORM_SUBMISSION")) {
+  PHONE_NUMBER_DISPLAY <- "phone_display-number"
+  MAIL_FORM_SUBMISSION <- "mail_form-submitted"
+}
 
 
 
@@ -18,16 +21,16 @@ visits <- events[, .(
 
 # 2) Summarize at the user level
 visits_summary <- visits[, .(
-  nb_visits = .N,
-  nb_visits_logged = sum(any_logged),                     # 100% or partially connected visits
-  nb_visits_hybrid = sum(any_logged & any_unlogged)       # hybrid visits
+  nb_sessions = .N,
+  nb_sessions_logged = sum(any_logged),                     # 100% or partially connected visits
+  nb_sessions_hybrid = sum(any_logged & any_unlogged)       # hybrid visits
 ), by = fullvisitorid]
 
 
 rm(visits)
 
-summary(visits_summary$nb_visits)
-summary(visits_summary$nb_visits_logged)
+summary(visits_summary$nb_sessions)
+summary(visits_summary$nb_sessions_logged)
 
 
 events_1 <- merge(events, visits_summary, by = "fullvisitorid", all.x = TRUE)
@@ -42,15 +45,15 @@ rm(visits_summary)
 
 
 users_attributes <- events_1[, .(
-  nb_visits        = nb_visits,
+  nb_sessions        = nb_sessions,
   nb_listings      = .N,
-  nb_visits_logged = nb_visits_logged,
-  is_logged        = nb_visits_logged > 0
+  nb_sessions_logged = nb_sessions_logged,
+  is_logged        = nb_sessions_logged > 0
 ), by = fullvisitorid][, .SD[1], by = fullvisitorid]
 
 
-summary(users_attributes$nb_visits)
-summary(users_attributes$nb_visits_logged)
+summary(users_attributes$nb_sessions)
+summary(users_attributes$nb_sessions_logged)
 
 
 freq(users_attributes$is_logged)
@@ -59,12 +62,29 @@ t.test(nb_listings ~ is_logged,
        data = users_attributes)
 
 
-
+rm(events_1)
 
 
 #==========================================
 #   mail_phone data : serious measure     
 #==========================================
+
+
+action_summary <- mail_phone[, .(
+  
+  # Number of listings with at least one email sent
+  nb_listing_mailed = uniqueN(id_listing[event_action == "mail_form-submitted"]),
+  
+  # Number of listings with at least one phone number display
+  nb_listing_phone_disp = uniqueN(id_listing[event_action == "phone_display-number"])
+  
+), by = fullvisitorid]
+
+summary(action_summary$nb_listing_phone_disp)
+summary(action_summary$nb_listing_mailed)
+
+
+
 
 mail_phone <- merge(mail_phone, action_summary, by = "fullvisitorid", all.x = TRUE)
 
@@ -73,11 +93,11 @@ user_mail_phone_account <- mail_phone[
   , .(
     nb_listings      = .N,
     nb_is_logged     = sum(as.numeric(is_logged)),
-    nb_phone_display = sum(event_action == "phone_display-number"),
-    nb_mail_form     = sum(event_action == "mail_form-submitted"),
+    nb_phone_display = sum(event_action == PHONE_NUMBER_DISPLAY),
+    nb_mail_form     = sum(event_action == MAIL_FORM_SUBMISSION),
     is_logged        = sum(as.numeric(is_logged)) > 0,
-    phone_display    = sum(event_action == "phone_display-number") > 0,
-    mail_form        = sum(event_action == "mail_form-submitted") > 0,
+    phone_display    = sum(event_action == PHONE_NUMBER_DISPLAY) > 0,
+    mail_form        = sum(event_action == MAIL_FORM_SUBMISSION) > 0,
     nb_listing_phone_disp = nb_listing_phone_disp,
     nb_listing_mailed     = nb_listing_mailed
   ),
@@ -85,7 +105,7 @@ user_mail_phone_account <- mail_phone[
 ][, .SD[1], by = fullvisitorid]
 
 
-rm(mail_phone)
+rm(mail_phone, action_summary)
 
 summary(user_mail_phone_account$nb_mail_form)
 summary(user_mail_phone_account$nb_phone_display)
@@ -114,8 +134,8 @@ events_serious_indicator <- serious_indicator[
   , .(
     fullvisitorid,
     nb_listings      = nb_listings.x,
-    nb_visits        = nb_visits,
-    nb_visits_logged = nb_visits_logged,
+    nb_sessions        = nb_sessions,
+    nb_sessions_logged = nb_sessions_logged,
     is_logged     = is_logged.x,
     phone_display = fifelse(is.na(phone_display), FALSE, phone_display),
     mail_form     = fifelse(is.na(mail_form), FALSE, mail_form),

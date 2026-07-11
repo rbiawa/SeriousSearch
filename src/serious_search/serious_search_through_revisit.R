@@ -82,20 +82,30 @@ ev_revisit <- ev_feat[
 
 rm(ev_feat)
 
+#======================================
+# Compute spatial contiguity variable
+#======================================
+
+if (!exists("DEP_ID_VARIABLE") || !exists("CITY_ID_VARIABLE")){
+  DEP_ID_VARIABLE      <- "dep_ID"
+  CITY_ID_VARIABLE      <- "sl_insee_city_id"
+}
+
+
 
 
 
 ev_revisit <- check_connectivity(ev_revisit
                                    , contig_graph   = dep_contig_graph
                                    , user_id        = "fullvisitorid"
-                                   , loc_col        = "dep_ID"
+                                   , loc_col        = DEP_ID_VARIABLE
                                    , contiguous_col = "dep_contig")
 
 
 ev_revisit <- check_connectivity(ev_revisit
                                    , contig_graph   = city_contig_graph
                                    , user_id        = "fullvisitorid"
-                                   , loc_col        = "sl_insee_city_id"
+                                   , loc_col        = CITY_ID_VARIABLE
                                    , contiguous_col = "city_contig")
 
 #================================================
@@ -116,7 +126,7 @@ ev_revisit <- check_connectivity(ev_revisit
       # =============================
       n_events   = .N,
       n_listings = uniqueN(id_listing),
-      nb_visits  = uniqueN(visitid),
+      nb_sessions  = uniqueN(visitid),
       
       # =============================
       # 1. Navigation intensity
@@ -238,17 +248,11 @@ ev_revisit <- check_connectivity(ev_revisit
 
 }
 
-dir.create("out/Rdata/serious_search/", recursive = TRUE, showWarnings = FALSE)
-
-if(TRUE) save(visitor_stats, 
-              revisit_indicators,
-              variability_indicators,
-     file = "out/Rdata/serious_search/visitor_stats_sep.RData")
 
 
-
-rm(events, events_12m, events_12m_conc, events_year, events2, ev_revisit, visitor_listing, revisit_indicators,
-   variability_indicators)
+rm(events, events2, ev_revisit, visitor_listing, revisit_indicators,
+   variability_indicators, features, dep_contig, dep_contig_graph, 
+   city_contig, city_contig_graph)
 
 #================================================
 # 5. User indicators : add contact indicators
@@ -256,7 +260,7 @@ rm(events, events_12m, events_12m_conc, events_year, events2, ev_revisit, visito
 
 visitor_stats <- merge(visitor_stats,
                        events_serious_indicator %>% 
-                         dplyr::select(- nb_visits),
+                         dplyr::select(- nb_sessions),
                        , by = c("fullvisitorid")
                        , all.x = TRUE
 )

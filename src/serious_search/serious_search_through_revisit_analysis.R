@@ -9,10 +9,6 @@
 
 
 
-
-visitor_stats <- visitor_stats %>% 
-  rename(nb_sessions = nb_visits)
-
 #======================================
 # Variable selection
 #======================================

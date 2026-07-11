@@ -13,6 +13,14 @@
 
 LEAVE_R <- FALSE
 
+# Event type label
+
+PHONE_NUMBER_DISPLAY <- "phone_display-number" 
+MAIL_FORM_SUBMISSION <- "mail_form-submitted"
+DEP_ID_VARIABLE      <- "dep_ID"
+CITY_ID_VARIABLE      <- "sl_insee_city_id"
+
+
 
 #=========================
 # Create directories
