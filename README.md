@@ -21,7 +21,6 @@ They can also be applied to custom datasets to identify user behaviors that may 
 
 ------------------------------------------------------------------------
 
-**Keywords** : Housing search, real estate platforms, user-generated data, housing market, Web data
 
 
 
