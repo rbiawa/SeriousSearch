@@ -2,7 +2,7 @@ SSIUGD v1.0.0
 ===================
 *Serious Search Identification in User-generated data*
                                                             
-* Copyright 2021-2023 <Anonymous submission>
+* Copyright 2024-2026 <Anonymous submission>
 
 SSIUGD is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see licence.txt
 
