@@ -12,7 +12,7 @@
 # Load events dataset
 #==================================
 
-events <- read_parquet("data/events.parquet") %>%
+events <- read_parquet("in/events.parquet") %>%
   as.data.table()
 
 events <- events %>%
@@ -26,7 +26,7 @@ events <- events %>%
 #==========================================
 
 
-mail_phone <- read_parquet("data/mail_phone.parquet") %>%
+mail_phone <- read_parquet("in/mail_phone.parquet") %>%
   as.data.table()
 
 
@@ -58,7 +58,7 @@ rm(action_summary)
 #   Load listings' features      
 #==========================================
 
-features <- read_parquet("data/features.parquet") %>%
+features <- read_parquet("in/features.parquet") %>%
   as.data.table()
 
 
@@ -67,9 +67,9 @@ features <- read_parquet("data/features.parquet") %>%
 #    Compute Contiguity matrices       
 #===============================#
 
-geom_sf_departments <- st_read("data/geom_sf_departments.gpkg")
+geom_sf_departments <- st_read("in/geom_sf_departments.gpkg")
 
-geom_sf_cities <- st_read("data/geom_sf_cities.gpkg")
+geom_sf_cities <- st_read("in/geom_sf_cities.gpkg")
 
 
 # subregion contiguity matrix
