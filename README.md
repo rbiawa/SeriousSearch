@@ -15,7 +15,7 @@ SeriousSearch is free software: you can redistribute it and/or modify it under t
 This repository contains the R code used to process the data, generate all results, and produce the figures presented in the document *'**Who is Serious? A novel behavioral approach for identifying serious search on online real estate platforms**'*.  
 A link to the document will be added if it is published.
 
-The scripts provide a complete workflow for data preprocessing, behavioral feature construction, analysis, and visualization.  
+The scripts provide a complete workflow for behavioral feature construction, analysis, and visualization.  
 They can also be applied to custom datasets to identify user behaviors that may be interpreted as *serious search* within housing-related user‑generated data.
 
 
