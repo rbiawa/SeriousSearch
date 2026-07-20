@@ -129,8 +129,9 @@ First, you need to set files `events.parquet`, `features.gpkg`, `mail_phone.parq
 
 #### Processing
 1. Copy your own `events.parquet`, `features.gpkg`, `geom_sf_cities.gpkg`, `geom_sf_departements.gpkg`, and possibly `mail_phone.parquet` in the `data` folder;
-2. Open `Serious_search_identification.Rproj`;
-3. Run the `serious_search_through_revisit_along_with_contact_indicators.R` script using `source("serious_search_through_revisit_along_with_contact_indicators.R")`.
+2.
+   -If contact indicators are available and want to incorporate them in the process, run the `serious_search_through_revisit_along_with_contact_indicators.R` script using `source("serious_search_through_revisit_along_with_contact_indicators.R")`.
+  - If contact indicators are not available, run the `serious_search_through_revisit_without_contact_indicators.R` script using `source("serious_search_through_revisit_without_contact_indicators.R")`.
      
 #### Output
 The output of this processing is saved under `out/parquet/serious_search/serious_search_data.parquet`. Serious search is identified through the column `is_serious`, which is a logical variable.
