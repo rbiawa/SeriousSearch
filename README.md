@@ -43,16 +43,16 @@ If you use this source code, please cite article:
 
 ## Organization
 
-- `data`: folder containing all the input data files.
+- `in`: folder containing all the input data files.
   - `events.parquet`: dataset  (in [parquet](https://en.wikipedia.org/wiki/Apache_Parquet) format) of listings viewed by online searchers. Each line is a combination of a user with a listing. This table contains colums : `fullvisitorid` (user ID); `id_listing` (listing ID); `datetime` (date and time of view);  `visitid` (view ID in the dataset);  `is_logged` (indication of wether the user was logged while viewing the listing).
-  - `features.gpkg`: dataset (in [GeoPackage](https://en.wikipedia.org/wiki/GeoPackage) format) of every single listings' features. This table contains colums : `id_listing` (listing ID); `price` (property price); `area` (property area); `room_count` (property room count); `fct_room_count` (property room count set to factor variable); `sqm_price` (property square meter price); `item_type` (property type, wether a house or appartment);
+  - `features.parquet`: dataset (in [parquet](https://en.wikipedia.org/wiki/Apache_Parquet) of every single listings' features. This table contains colums : `id_listing` (listing ID); `price` (property price); `area` (property area); `room_count` (property room count); `fct_room_count` (property room count set to factor variable); `sqm_price` (property square meter price); `item_type` (property type, wether a house or appartment);
   - `mail_phone.parquet`: a dataset (in [parquet](https://en.wikipedia.org/wiki/Apache_Parquet) format) of contact indicators. Each line is a combination of a user with a listing. This table contains colums : `fullvisitorid` (user ID); `id_listing` (listing ID); `datetime` (date and time of view); `visitid` (view ID in the dataset); `event_action` (indication of the contact action a user made : displaying a phone number or submiting a mail form); `is_logged` (indication of wether the user was logged while viewing the listing).
-  - `geom_sf_cities.gpkg`: `shapefile` containing cities' limits.
-  - `geom_sf_departements.gpkg`: `shapefile` containing departements' limits. In the French context, departments correspond to the NUTS 3 level of the EU territorial classification system, which is an administrative unit with populations ranging from 150,000 to 800,000 inhabitants [[Eu'26](#references)].
+  - `geom_sf_cities.gpkg`: a file (in [GeoPackage](https://en.wikipedia.org/wiki/GeoPackage) format) containing cities' limits.
+  - `geom_sf_departements.gpkg`: a file (in [GeoPackage](https://en.wikipedia.org/wiki/GeoPackage) format) containing departements' limits. In the French context, departments correspond to the NUTS 3 level of the EU territorial classification system, which is an administrative unit with populations ranging from 150,000 to 800,000 inhabitants [[Eu'26](#references)].
 - `out`: folder containing the outputs of the processing.
-  - `pdf`: pdf files.
-  - `Rdata`: Rdata files.
-  - `svg`: svg files.
+  - `pdf`: pdf files with the plots of the processing.
+  - `Rdata`: Rdata files containing `R`objects such as dataframes.
+  - `svg`: svg files with the plots of the processing.
   - `tex`: tex files (output in Latex format).
 - `src`: folder containing the source code.
   - `plot`: folder containing `R` scripts for plots.
@@ -94,13 +94,13 @@ You need to set up the files in folder `data`: `events.parquet`, `features.gpkg`
 ### To Replicate the Paper Experiments
 
 #### Data Preparation
-Unfortunately, we are not allowed to publish the data used in this paper. However, we provide a small fictional dataset designed to test the program and reproduce experiments similar to those presented in our paper. 
-Unzip `data/data.7z` into folder `data` to set up this dataset.
+Unfortunately, we are not allowed to publish the data used in this paper. However, we provide a small fictional dataset designed to test the program and reproduce experiments similar to those presented in our paper (see folder `in`). 
+
 
 #### Processing
-Once the dataset is ready, do the following to apply the process described in the paper to these data:
-1. Open `Serious_search_identification.Rproj`;
-2. Run the `main.R` script using `source("main.R")`.
+Once the dataset is ready, do the following to apply the process described in the paper to these data: Run the `main.R` script using `source("main.R")`.
+
+**Note** : [Rstudio](https://docs.posit.co/ide/user/)  user may first run `Serious_search_identification.Rproj` file to work under the project. For example, this will automatically set the working directory. But this is not necessary.
 
 
 ### To Apply the Paper Process to Custom Data
